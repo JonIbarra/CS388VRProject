@@ -29,12 +29,6 @@ public class GyroscopeControl : MonoBehaviour
 			if (gyroEnabled) 
 			{
 					transformObject.localRotation = Quaternion.Slerp (transformObject.localRotation, cameraBase * (ConvertRotation (referanceRotation * Input.gyro.attitude) * GetRotFix ()), lowPassFilterFactor);
-
-					float angleY = transformObject.localRotation.y;
-					if (Input.acceleration.z <= -tiltThreshhold || Input.acceleration.z >= tiltThreshhold)
-					{
-						transformObject.forward = new Vector3(Mathf.Cos(angleY) * Time.deltaTime * playerSpeed, 0.0f, Mathf.Sin(angleY) * Time.deltaTime * playerSpeed);
-					}
 			}
 		}
 	#endregion
