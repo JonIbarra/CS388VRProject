@@ -7,6 +7,8 @@ public class PlayerController : MonoBehaviour
     public float playerSpeed;
     public GameObject door;
 
+    public GameObject laberynth;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -30,6 +32,16 @@ public class PlayerController : MonoBehaviour
         if (Input.GetKey(KeyCode.Q))
             gameObject.transform.Rotate(new Vector3(0f, -playerSpeed, 0f) * Time.deltaTime);
 #endif
+        Vector3 dir = new Vector3(0f, 0f, 0f);
+        float dist;
+
+        if (Physics.ComputePenetration(laberynth.GetComponent<MeshCollider>(), laberynth.transform.position, laberynth.transform.rotation,
+            GetComponent<BoxCollider>(), transform.position, transform.rotation, out dir, out dist))
+        {
+            //Debug.Log("Dir: " + dir.x + ", " + dir.y + ", " + dir.z);
+            //Debug.Log("Dist: " + dist);
+            gameObject.transform.position += new Vector3(-dir.x * dist, -dir.y * dist, -dir.z * dist);
+        }
     }
     private void OnTriggerEnter(Collider other)
     {
