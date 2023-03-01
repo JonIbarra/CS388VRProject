@@ -12,6 +12,9 @@ public class PlayerController : MonoBehaviour
     CharacterController controller;
 
     public GameObject laberynth;
+    public UnityEngine.UI.Text doorText;
+    public UnityEngine.UI.Text endText;
+    public Animator anim;
 
     // Start is called before the first frame update
     void Start()
@@ -55,7 +58,24 @@ public class PlayerController : MonoBehaviour
         {
             Destroy(other.gameObject);
             Destroy(door);
+            doorText.text = "Door: Open";
         }
+        if (other.name == "End")
+        {
+            endText.color = new Color(50, 50, 50, 255);
+            Invoke("EndSequence", 1);
+        }
+    }
+
+    private void EndSequence()
+    {
+        anim.Play("FadeOut");
+        Invoke("Finish", 1);
+    }
+
+    private void Finish()
+    {
+        UnityEngine.SceneManagement.SceneManager.LoadScene(0);
     }
 
 }
