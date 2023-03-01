@@ -5,11 +5,12 @@ public class GyroscopeControl : MonoBehaviour
 {
 	//Objects transform to change
 	Transform transformObject;
-	public float playerSpeed;
-	public float tiltThreshhold;
+	public Transform player;
+	public float maxMoveTime = 5.0f;
 	#region [Private fields]
 		private bool gyroEnabled = true;
 		private const float lowPassFilterFactor = 0.2f;
+		private float moveTime = 0.0f;
 		private readonly Quaternion baseIdentity = Quaternion.Euler (90, 0, 0);
 		private Quaternion cameraBase = Quaternion.identity;
 		private Quaternion calibration = Quaternion.identity;
@@ -20,20 +21,36 @@ public class GyroscopeControl : MonoBehaviour
 	#region [Unity events]
 		protected void Start ()
 		{
-			transformObject = gameObject.transform;
+			transformObject = player.transform;
 			Input.gyro.enabled = true;
 			AttachGyro ();
 		}
 		protected void LateUpdate ()
 		{
+#if !UNITY_EDITOR
 			if (gyroEnabled) 
 			{
-					transformObject.localRotation = Quaternion.Slerp (transformObject.localRotation, cameraBase * (ConvertRotation (referanceRotation * Input.gyro.attitude) * GetRotFix ()), lowPassFilterFactor);
+				transformObject.localRotation = Quaternion.Slerp (transformObject.localRotation, cameraBase * (ConvertRotation (referanceRotation * Input.gyro.attitude) * GetRotFix ()), lowPassFilterFactor);
+				transform.localRotation = Quaternion.Slerp(transformObject.localRotation, cameraBase * (ConvertRotation(referanceRotation * Input.gyro.attitude) * GetRotFix()), lowPassFilterFactor);
+
+				moveTime += Time.deltaTime;
+				if(moveTime >= maxMoveTime)
+				{
+					Ray ray = new Ray(transformObject.position, transformObject.forward);
+
+					if (Physics.Raycast(ray, out RaycastHit hit))
+					{
+						player.position = hit.point;
+					}
+
+					moveTime = 0.0f;
+				}			
 			}
+#endif
 		}
-	#endregion
-	#region [Public methods]
-		private void AttachGyro ()
+#endregion
+#region [Public methods]
+	private void AttachGyro ()
 		{
 				gyroEnabled = true;
 				ResetBaseOrientation ();
@@ -45,8 +62,8 @@ public class GyroscopeControl : MonoBehaviour
 		{
 				gyroEnabled = false;
 		}
-	#endregion
-	#region [Private methods]
+#endregion
+#region [Private methods]
 		private void UpdateCalibration (bool onlyHorizontal)
 		{
 				if (onlyHorizontal) {
@@ -92,6 +109,6 @@ public class GyroscopeControl : MonoBehaviour
 		{
 				referanceRotation = Quaternion.Inverse (baseOrientation) * Quaternion.Inverse (calibration);
 		}
-	#endregion
+#endregion
 }
 #endif
