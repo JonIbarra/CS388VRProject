@@ -8,7 +8,6 @@ public class PlayerController : MonoBehaviour
     public float rotationSpeed;
     public GameObject door;
     public Transform cam;
-    public bool enablePCControls = false;
 
     CharacterController controller;
 
@@ -24,24 +23,21 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
 #if UNITY_EDITOR
-        if(enablePCControls)
-        {
-            float x = Input.GetAxis("Horizontal");
-            float z = Input.GetAxis("Vertical");
+        float x = Input.GetAxis("Horizontal");
+        float z = Input.GetAxis("Vertical");
 
-            Vector3 move = transform.right * x + transform.forward * z;
+        Vector3 move = transform.right * x + transform.forward * z;
 
-            controller.Move(move * playerSpeed * Time.deltaTime);
+        controller.Move(move * playerSpeed * Time.deltaTime);
 
-            if (Input.GetKey(KeyCode.E))
-                gameObject.transform.Rotate(new Vector3(0f, rotationSpeed, 0f) * Time.deltaTime);
-            if (Input.GetKey(KeyCode.Q))
-                gameObject.transform.Rotate(new Vector3(0f, -rotationSpeed, 0f) * Time.deltaTime);
-        }
+        if (Input.GetKey(KeyCode.E))
+            gameObject.transform.Rotate(new Vector3(0f, rotationSpeed, 0f) * Time.deltaTime);
+        if (Input.GetKey(KeyCode.Q))
+            gameObject.transform.Rotate(new Vector3(0f, -rotationSpeed, 0f) * Time.deltaTime);
 
         cam.rotation = transform.rotation;
-#endif
         cam.position = transform.position;
+#endif
 
         Vector3 dir = new Vector3(0f, 0f, 0f);
         float dist;
