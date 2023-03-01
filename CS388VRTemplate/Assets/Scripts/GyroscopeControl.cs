@@ -23,7 +23,7 @@ public class GyroscopeControl : MonoBehaviour
 	#region [Unity events]
 		protected void Start ()
 		{
-			
+			Screen.sleepTimeout = (int)SleepTimeout.NeverSleep;
 			transformObject = gameObject.transform;
 			Input.gyro.enabled = true;
 			AttachGyro ();
