@@ -38,9 +38,10 @@ public class PlayerController : MonoBehaviour
         if (Input.GetKey(KeyCode.Q))
             gameObject.transform.Rotate(new Vector3(0f, -rotationSpeed, 0f) * Time.deltaTime);
 
-        cam.position = transform.position;
         cam.rotation = transform.rotation;
+        cam.position = transform.position;
 #endif
+
         Vector3 dir = new Vector3(0f, 0f, 0f);
         float dist;
 
